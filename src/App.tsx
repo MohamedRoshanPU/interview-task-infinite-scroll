@@ -75,7 +75,7 @@ function App() {
           return (
             <Fragment key={idx}>
               {page?.nodes?.map((feed: any) => {
-                return <FeedCard key={"k"} data={feed} />;
+                return <FeedCard key={feed?.nid} data={feed} />;
               })}
             </Fragment>
           );
