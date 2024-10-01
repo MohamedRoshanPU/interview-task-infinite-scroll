@@ -27,6 +27,7 @@ function App() {
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
+    refetch,
   } = useInfiniteQuery({
     queryKey: ["feeds"],
     queryFn: fetchData,
@@ -38,8 +39,6 @@ function App() {
       return lastPageParam + 1;
     },
   });
-
-  console.log(`App,  : data_values`, data);
 
   // Using intersection observer for finding whether the user has scrolled to the bottom of the page
   useEffect(() => {
@@ -57,7 +56,16 @@ function App() {
   }, [hasNextPage]);
 
   if (error) {
-    return <div>Something went wrong! Please try again.</div>;
+    return (
+      <div className="error">
+        <div>
+          <p>Something went wrong! Please try again.</p>
+          <button onClick={() => refetch()} className="button">
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
