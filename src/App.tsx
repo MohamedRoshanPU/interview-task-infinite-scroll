@@ -1,44 +1,24 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
 import "./App.css";
 import FeedCard from "./components/FeedCard";
 import Spinner from "./components/Spinner";
 import { Fragment, useEffect, useRef } from "react";
+import { FeedType, PageType } from "./utils/types";
+import useFetchData from "./hooks/useFetchData";
 
 function App() {
   const intersectionRef = useRef<HTMLDivElement>(null);
-  // Function for Api call
-  const fetchData = async ({ pageParam }: any) => {
-    let res = await fetch(
-      `https://proxy.cors.sh/https://englishapi.pinkvilla.com/app-api/v1/photo-gallery-feed-page/page/${pageParam}`,
-      {
-        headers: {
-          "x-cors-api-key": "temp_78118e5223aa4b26ca16b40e3087bfa4",
-        },
-      }
-    );
-    return res.json();
-  };
-
-  // Using RTK Query for infinite api calls
+  // Using Custom hook for API Calls
   const {
     data,
     error,
+    fetchNextPage,
+    hasNextPage,
     isFetching,
     isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
     refetch,
-  } = useInfiniteQuery({
-    queryKey: ["feeds"],
-    queryFn: fetchData,
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, _, lastPageParam: number) => {
-      if (lastPage?.nodes?.length == 0) {
-        return undefined;
-      }
-      return lastPageParam + 1;
-    },
-  });
+  } = useFetchData();
+
+  console.log(`App,  : data_values`, data);
 
   // Using intersection observer for finding whether the user has scrolled to the bottom of the page
   useEffect(() => {
@@ -71,11 +51,11 @@ function App() {
   return (
     <div className="container">
       <div className="scroll-container">
-        {data?.pages?.map((page: any, idx: number) => {
+        {data?.pages?.map((page: PageType, idx: number) => {
           return (
             <Fragment key={idx}>
-              {page?.nodes?.map((feed: any) => {
-                return <FeedCard key={feed?.nid} data={feed} />;
+              {page?.nodes?.map((feed: FeedType) => {
+                return <FeedCard key={feed?.node?.nid} data={feed} />;
               })}
             </Fragment>
           );

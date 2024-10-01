@@ -1,8 +1,9 @@
 import React from "react";
 import "../App.css";
+import { FeedType } from "../utils/types";
 
 type FeedCardProps = {
-  data: any;
+  data: FeedType;
 };
 const FeedCard: React.FC<FeedCardProps> = ({ data }) => {
   return (
